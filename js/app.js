@@ -8,7 +8,6 @@ const form = document.querySelector('form');
 
 function fetchData(url) {
   return fetch(url)
-    .then(checkStatus)
     .then(res => res.json())
     .catch(error => console.log('Error', error));
 }
@@ -22,14 +21,6 @@ fetchData('https://dog.ceo/api/breeds/list')
 // ------------------------------------------
 //  HELPER FUNCTIONS
 // ------------------------------------------
-
-function checkStatus(response) {
-  if(reponse.ok) {
-    return Promise.resolve(reponse);
-  } else {
-    return Promise.reject(new Error(response.statusText));
-  }
-}
 
 function generateOptions(data) {
   for (let i = 0; i < data.length; i++) {
@@ -61,9 +52,26 @@ function fetchBreedImage() {
 // ------------------------------------------
 select.addEventListener('change', fetchBreedImage);
 card.addEventListener('click', fetchBreedImage);
-
+form.addEventListener('submit', postData);
 
 // ------------------------------------------
 //  POST DATA
 // ------------------------------------------
 
+function postData(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const comment = document.getElementById('comment').value;
+  const config = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: name, comment: comment })
+  };
+  
+  fetch('https://jsonplaceholder.typicode.com/comments', config)
+    .then(res => res.json())
+    .then(data => console.log(data))
+
+}
